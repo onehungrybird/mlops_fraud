@@ -63,7 +63,7 @@ jobs:
           context: .
           file: Dockerfile.mlflow
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_MLFLOW }}:${{ env.TAG }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64
           cache-from: type=gha
@@ -78,7 +78,7 @@ jobs:
           context: .
           file: Dockerfile.api
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_API }}:${{ env.TAG }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64
           cache-from: type=gha
