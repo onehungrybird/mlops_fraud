@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
 
-  # Image names
+  # Image Names
   IMAGE_MLFLOW: ${{ github.repository_owner }}/mlflow
   IMAGE_API: ${{ github.repository_owner }}/creditcard-api
   IMAGE_PROMETHEUS: ${{ github.repository_owner }}/prometheus
