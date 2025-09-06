@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write  # Required to push to GHCR
+      packages: write  # Req to push to GHCR
 
     steps:
       - name: Checkout code
