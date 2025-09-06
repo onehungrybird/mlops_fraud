@@ -1,0 +1,65 @@
+# docker-compose.yml
+# version: '3.8'
+
+services:
+  mlflow:
+    image: ghcr.io/onehungrybird/mlflow:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+      # container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow_runs:/app/mlflow_runs
+    restart: unless-stopped
+
+  creditcard-api:
+    image: ghcr.io/onehungrybird/creditcard-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      # container_name: creditcard-api
+    ports:
+      - "8000:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - ./mlflow_runs:/app/mlflow_runs
+      - ./mlflow_runs:/home/ubuntu/mlops-fraud2/mlflow_runs # this is not good practice
+    depends_on:
+      - mlflow
+    restart: unless-stopped
+
+  prometheus:
+    image: ghcr.io/onehungrybird/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle'
+
+  grafana:
+    image: ghcr.io/onehungrybird/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana_password
+      - GF_SERVER_ROOT_URL=http://98.80.224.211:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus_data:
+  grafana_data:

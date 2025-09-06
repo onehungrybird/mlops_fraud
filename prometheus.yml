@@ -1,0 +1,8 @@
+# prometheus.yml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'creditcard-api'
+    static_configs:
+      - targets: ['creditcard-api:8000']  # Service name in Docker compose

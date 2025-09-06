@@ -1,0 +1,14 @@
+# Ignore all CSV files in raw and processed folders
+data/raw/*.csv
+data/processed/*.csv
+
+# But keep any .dvc files in those folders
+!data/raw/*.dvc
+!data/processed/*.dvc
+
+# Ignore Python virtual environment
+venv/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc

@@ -1,0 +1,12 @@
+# Dockerfile.grafana
+FROM grafana/grafana:latest
+
+# Copy provisioning config
+COPY grafana/provisioning/ /etc/grafana/provisioning/
+
+# Optional: Set permissions
+USER root
+RUN chown -R grafana:grafana /etc/grafana/provisioning/
+USER grafana
+
+EXPOSE 3000

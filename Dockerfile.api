@@ -1,0 +1,22 @@
+# Dockerfile.api
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy source code and configs
+COPY notebooks/ ./notebooks
+COPY metadata/ ./metadata
+
+# Create directory for MLflow runs (shared via volume)
+RUN mkdir -p mlflow_runs
+
+# Expose port 8000
+EXPOSE 8000
+
+# Run FastAPI app with MLflow tracking URI from environment
+CMD ["uvicorn", "notebooks.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]

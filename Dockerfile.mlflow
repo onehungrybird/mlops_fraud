@@ -1,0 +1,21 @@
+# Dockerfile.mlflow
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install MLflow
+RUN pip install mlflow
+
+# Create directory for MLflow runs
+RUN mkdir -p mlflow_runs
+
+# Expose port 5000
+EXPOSE 5000
+
+# Run MLflow server with absolute paths (using volume mount)
+CMD ["mlflow", "server", \
+     "--backend-store-uri", "sqlite:///mlflow_runs/mlflow.db", \
+     "--default-artifact-root", "file:/app/mlflow_runs", \
+     "--host", "0.0.0.0", \
+     "--port", "5000"]
