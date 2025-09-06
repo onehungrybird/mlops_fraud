@@ -1,12 +1,10 @@
 # Dockerfile.grafana
 FROM grafana/grafana:latest
 
-# Copy provisioning config
+# Copy provisioning config (datasources, dashboards)
 COPY grafana/provisioning/ /etc/grafana/provisioning/
 
-# Optional: Set permissions
-USER root
-RUN chown -R grafana:grafana /etc/grafana/provisioning/
-USER grafana
+# No chown needed — files are readable by UID 472
+USER 472
 
 EXPOSE 3000
