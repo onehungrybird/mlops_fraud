@@ -130,7 +130,7 @@ jobs:
           script: |
             set -e  # Exit on error
 
-            cd /home/ubuntu/mlops_fraud2
+            cd /home/ubuntu/mlops-fraud2
 
             # Pull latest docker-compose.yml and config (optional)
             git pull origin main
