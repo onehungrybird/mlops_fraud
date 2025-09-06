@@ -8,13 +8,12 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAMESPACE: ${{ github.repository_owner }}
 
   # Image names
-  IMAGE_MLFLOW: ${{ env.IMAGE_NAMESPACE }}/mlflow
-  IMAGE_API: ${{ env.IMAGE_NAMESPACE }}/creditcard-api
-  IMAGE_PROMETHEUS: ${{ env.IMAGE_NAMESPACE }}/prometheus
-  IMAGE_GRAFANA: ${{ env.IMAGE_NAMESPACE }}/grafana
+  IMAGE_MLFLOW: ${{ github.repository_owner }}/mlflow
+  IMAGE_API: ${{ github.repository_owner }}/creditcard-api
+  IMAGE_PROMETHEUS: ${{ github.repository_owner }}/prometheus
+  IMAGE_GRAFANA: ${{ github.repository_owner }}/grafana
 
   # Default tag
   TAG: latest
