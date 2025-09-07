@@ -12,6 +12,7 @@ mlflow
 fastapi
 uvicorn
 pydantic
+uuid
 
 # Utilities
 pyyaml

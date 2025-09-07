@@ -27,6 +27,7 @@ services:
     volumes:
       # - ./mlflow_runs:/app/mlflow_runs # this is correct (fix later)
       - ./mlflow_runs:/home/ubuntu/mlops-fraud2/mlflow_runs # this is not good practice
+      - ./metadata:/app/metadata
     depends_on:
       - mlflow
     restart: unless-stopped

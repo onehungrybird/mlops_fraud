@@ -9,6 +9,10 @@ from typing import Optional
 import logging
 from starlette_prometheus import PrometheusMiddleware, metrics
 import mlflow
+import json
+from datetime import datetime
+import uuid
+from pathlib import Path
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -100,13 +104,28 @@ async def root():
         "endpoints": ["/health", "/predict", "/metrics"]
     }
 
+from pathlib import Path
+
+PREDICTION_LOG_FILE = Path("/app/metadata/pred_logs/prediction_logs.jsonl")
+PREDICTION_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+# Ensure the folder exists
+PREDICTION_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+
 @app.post("/predict", response_model=PredictionResponse)
 async def predict_fraud(transaction: TransactionInput):
+
+    request_id = str(uuid.uuid4())
+    timestamp = datetime.utcnow().isoformat()
+
     if model is None:
         raise HTTPException(status_code=503, detail="Service not ready: model not loaded")
 
     try:
         input_data = pd.DataFrame([transaction.dict()])
+
+        # input_data = scaler.transform(input_data)
 
         # Keep all features your model was trained on
         model_features = ['Time'] + [f'V{i}' for i in range(1, 29)] + ['Amount']
@@ -129,11 +148,26 @@ async def predict_fraud(transaction: TransactionInput):
             else "low"
         )
 
-        return PredictionResponse(
+        result = PredictionResponse(
             is_fraud=is_fraud,
             fraud_probability=round(fraud_probability, 4),
             confidence=confidence
         )
+
+        # ---- Logging block ----
+        log_entry = {
+            "request_id": request_id,
+            "timestamp": timestamp,
+            "features": transaction.dict(),
+            "prediction": result.dict()
+        }
+
+        logger.info(f"Writing prediction log to {PREDICTION_LOG_FILE}")
+        with open(PREDICTION_LOG_FILE, "a") as f:
+            f.write(json.dumps(log_entry) + "\n")
+            f.flush()
+
+        return result
 
     except Exception as e:
         logger.error(f"Prediction error: {e}")
