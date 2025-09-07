@@ -25,7 +25,7 @@ services:
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes:
-      # - ./mlflow_runs:/app/mlflow_runs # this is correct
+      # - ./mlflow_runs:/app/mlflow_runs # this is correct (fix later)
       - ./mlflow_runs:/home/ubuntu/mlops-fraud2/mlflow_runs # this is not good practice
     depends_on:
       - mlflow
